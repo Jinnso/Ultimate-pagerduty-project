@@ -35,3 +35,15 @@ resource "pagerduty_escalation_policy" "local_hotel_infrastructure" {
     }
   }
 }
+resource "pagerduty_escalation_policy" "cloud_apps_escalation" {
+  name      = "Cloud Applications Escalation"
+  num_loops = 2
+
+  rule {
+    escalation_delay_in_minutes = 10
+    target {
+      type = "schedule_reference"
+      id   = pagerduty_schedule.tier2_devops.id 
+    }
+  }
+}

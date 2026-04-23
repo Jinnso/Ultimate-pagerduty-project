@@ -70,7 +70,6 @@ resource "pagerduty_service_integration" "datadog_reservation_api" {
   vendor  = data.pagerduty_vendor.datadog.id
 }
 
-# Endpoint para recibir webhooks de Prometheus
 resource "pagerduty_service_integration" "prometheus_key_controllers" {
   name    = "Prometheus Alertmanager - IoT Nodes"
   service = pagerduty_service.local_key_controllers.id

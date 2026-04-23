@@ -1,59 +1,57 @@
-# Recurso de PagerDuty iterando sobre la lista combinada
-resource "pagerduty_team" "local_hotel_teams" {
-  # Convertimos la lista en un mapa donde la llave es el nombre del equipo
-  for_each = { for team in local.hotel_teams : team.team_name => team }
+# teams_and_users.tf
 
-  name        = each.value.team_name
-  description = "Equipo de ${each.value.department} para el hotel ubicado en ${each.value.location}."
+locals {
+  locations = [
+    "Americus, GA",
+    "Macon, GA",
+    "Birmingham, AL",
+    "Augusta, GA",
+    "Panama City Beach, FL"
+  ]
+
+  departments = [
+    "Guest Relations",
+    "Housekeeping",
+    "Facilities Engineering"
+  ]
+
+  hotel_teams = [
+    for pair in setproduct(local.locations, local.departments) : {
+      location   = pair[0]
+      department = pair[1]
+      team_name  = "${pair[0]} - ${pair[1]}"
+    }
+  ]
 }
 
-# --- EQUIPOS CORPORATIVOS FALTANTES ---
+# Equipos Locales
+resource "pagerduty_team" "local_hotel_teams" {
+  for_each    = { for team in local.hotel_teams : team.team_name => team }
+  name        = each.value.team_name
+  description = "Equipo de ${each.value.department} para el hotel en ${each.value.location}."
+}
 
+# Equipos Corporativos
 resource "pagerduty_team" "corp_hotel_support_center" {
   name        = "Hotel Support Center (Tier 1)"
-  description = "Centro de soporte global 24x7 para todos los hoteles."
+  description = "Centro de soporte global 24x7."
 }
 
 resource "pagerduty_team" "corp_hotel_tech_ops" {
   name        = "Hotel Tech Operations (Tier 2)"
-  description = "Especialistas corporativos en WiFi, streaming y POS."
+  description = "Especialistas corporativos en WiFi y sistemas POS."
 }
 
-# --- USUARIOS REQUERIDOS PARA LOS HORARIOS (Schedules) ---
-# Nota: PagerDuty requiere un email válido para crear usuarios. 
-# Puedes usar correos ficticios bajo un mismo dominio para este ejercicio.
+# Usuarios para Soporte Tier 1
+resource "pagerduty_user" "support_user_1" { name = "Support 1"; email = "support1@acme.local" }
+resource "pagerduty_user" "support_user_2" { name = "Support 2"; email = "support2@acme.local" }
+resource "pagerduty_user" "support_user_3" { name = "Support 3"; email = "support3@acme.local" }
 
-resource "pagerduty_user" "support_user_1" {
-  name  = "Support User 1"
-  email = "support1@acmehotel.local"
-}
-resource "pagerduty_user" "support_user_2" {
-  name  = "Support User 2"
-  email = "support2@acmehotel.local"
-}
-resource "pagerduty_user" "support_user_3" {
-  name  = "Support User 3"
-  email = "support3@acmehotel.local"
-}
+# Usuarios para DevOps Tier 2
+resource "pagerduty_user" "devops_user_1" { name = "DevOps 1"; email = "devops1@acme.local" }
+resource "pagerduty_user" "devops_user_2" { name = "DevOps 2"; email = "devops2@acme.local" }
+resource "pagerduty_user" "devops_user_3" { name = "DevOps 3"; email = "devops3@acme.local" }
 
-resource "pagerduty_user" "devops_user_1" {
-  name  = "DevOps User 1"
-  email = "devops1@acmehotel.local"
-}
-resource "pagerduty_user" "devops_user_2" {
-  name  = "DevOps User 2"
-  email = "devops2@acmehotel.local"
-}
-resource "pagerduty_user" "devops_user_3" {
-  name  = "DevOps User 3"
-  email = "devops3@acmehotel.local"
-}
-
-resource "pagerduty_user" "hotel_tech_user_1" {
-  name  = "Hotel Tech User 1"
-  email = "hoteltech1@acmehotel.local"
-}
-resource "pagerduty_user" "hotel_tech_user_2" {
-  name  = "Hotel Tech User 2"
-  email = "hoteltech2@acmehotel.local"
-}
+# Usuarios para Tech Ops Tier 2
+resource "pagerduty_user" "hotel_tech_user_1" { name = "Tech 1"; email = "tech1@acme.local" }
+resource "pagerduty_user" "hotel_tech_user_2" { name = "Tech 2"; email = "tech2@acme.local" }
