@@ -28,6 +28,29 @@ resource "pagerduty_business_service" "digital_key" {
   point_of_contact = "VP de Operaciones Hoteleras"
 }
 
+resource "pagerduty_business_service" "mobile_reservations" {
+  name             = "Mobile Reservations"
+  description      = "Canal de reservas a través de la aplicación móvil."
+  point_of_contact = "Director de E-Commerce"
+}
+
+resource "pagerduty_business_service" "in_room_entertainment" {
+  name             = "In-Room Entertainment (WiFi, Streaming, Dining)"
+  description      = "Servicios de red y entretenimiento para los huéspedes."
+  point_of_contact = "VP de Operaciones Hoteleras"
+}
+
+resource "pagerduty_business_service" "housekeeping_management" {
+  name             = "Housekeeping Management"
+  description      = "Gestión de limpieza y estado de habitaciones."
+  point_of_contact = "Director de Housekeeping"
+}
+
+resource "pagerduty_business_service" "facilities_management" {
+  name             = "Facilities Management"
+  description      = "Sistemas físicos, HVAC y mantenimiento del edificio."
+  point_of_contact = "Director de Facilities corporativo"
+}
 
 # -------------------------------------------------------------------------
 # 3. TECHNICAL SERVICES (Microservicios/Infra - Donde llegan las alertas)
@@ -43,8 +66,9 @@ resource "pagerduty_service" "cloud_reservation_api" {
   # Aquí conectamos el servicio con la política de escalamiento corporativa
   # Asume que creaste una política para Tier 1 / Tier 2 DevOps en el paso anterior
   escalation_policy = pagerduty_escalation_policy.cloud_apps_escalation.id
-
+    
   alert_creation = "create_alerts_and_incidents"
+
 }
 
 # Servicio Técnico: Controladores Locales de Llaves (IoT)
@@ -56,6 +80,7 @@ resource "pagerduty_service" "local_key_controllers" {
 
   escalation_policy = pagerduty_escalation_policy.local_hotel_infrastructure.id
   alert_creation    = "create_alerts_and_incidents"
+
 }
 
 

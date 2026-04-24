@@ -70,3 +70,33 @@ resource "pagerduty_event_orchestration_service" "aws_api_orchestration" {
     }
   }
 }
+
+resource "pagerduty_event_orchestration_service" "iot_orchestration" {
+  # Apuntamos esta orquestación al servicio que recibe las alertas de Grafana
+  service = pagerduty_service.local_key_controllers.id
+  enable_event_orchestration_for_service = true
+
+  set {
+    id = "start"
+
+    # Regla: Si la alerta de Grafana dice "Critical", elevar a P1
+    rule {
+      label = "Incidente Crítico de IoT (Elevación a P1)"
+      condition {
+        # Grafana suele incluir el estado en el summary o en los labels
+        expression = "event.summary matches part 'Critical' or event.custom_details.severity matches 'critical'"
+      }
+      actions {
+        severity = "critical"
+        priority = data.pagerduty_priority.p1.id
+        annotate = "Orquestación: Alerta de Grafana evaluada y elevada a P1. Iniciando ChatOps y Jira."
+      }
+    }
+  }
+
+  catch_all {
+    actions {
+      severity = "warning"
+    }
+  }
+}

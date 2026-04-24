@@ -1,9 +1,8 @@
-# escalation_policies.tf
-
 resource "pagerduty_escalation_policy" "local_hotel_infrastructure" {
   name        = "Local Hotel Infrastructure Escalation"
   description = "Escalamiento desde infraestructura local hacia soporte corporativo."
   num_loops   = 2
+  teams = [pagerduty_team.corp_hotel_tech_ops.id]
 
   # Nivel 1: Apuntamos a un USUARIO específico del equipo técnico
   rule {
@@ -28,6 +27,8 @@ resource "pagerduty_escalation_policy" "cloud_apps_escalation" {
   name        = "Cloud Applications Escalation"
   description = "Escalamiento para infraestructura Cloud. Va directo a DevOps."
   num_loops   = 2
+
+  teams = [pagerduty_team.corp_hotel_tech_ops.id]
 
   rule {
     escalation_delay_in_minutes = 10

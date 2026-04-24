@@ -81,11 +81,11 @@ resource "pagerduty_user" "hotel_tech_user_2" {
 }
 
 resource "pagerduty_tag" "skill_aws" {
-  label = "Expertise: AWS"
+  label = "Expertise_AWS"
 }
 
 resource "pagerduty_tag" "language_spanish" {
-  label = "Language: Spanish"
+  label = "Language_Spanish"
 }
 
 # Asignar etiquetas a un usuario (Ejemplo)
@@ -93,4 +93,28 @@ resource "pagerduty_tag_assignment" "devops_aws_tag" {
   tag_id      = pagerduty_tag.skill_aws.id
   entity_type = "users"
   entity_id   = pagerduty_user.devops_user_1.id
+}
+
+# Vincular usuarios de DevOps al equipo de Central Tech
+resource "pagerduty_team_membership" "devops_membership" {
+  for_each = {
+    user1 = pagerduty_user.devops_user_1.id
+    user2 = pagerduty_user.devops_user_2.id
+    user3 = pagerduty_user.devops_user_3.id
+  }
+  user_id = each.value
+  team_id = pagerduty_team.corp_hotel_tech_ops.id
+  role    = "manager" # Puede ser manager, responder o observer
+}
+
+# Vincular usuarios de Soporte al Hotel Support Center
+resource "pagerduty_team_membership" "support_membership" {
+  for_each = {
+    u1 = pagerduty_user.support_user_1.id
+    u2 = pagerduty_user.support_user_2.id
+    u3 = pagerduty_user.support_user_3.id
+  }
+  user_id = each.value
+  team_id = pagerduty_team.corp_hotel_support_center.id
+  role    = "responder"
 }
