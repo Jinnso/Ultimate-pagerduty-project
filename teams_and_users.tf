@@ -43,15 +43,39 @@ resource "pagerduty_team" "corp_hotel_tech_ops" {
 }
 
 # Usuarios para Soporte Tier 1
-resource "pagerduty_user" "support_user_1" { name = "Support 1"; email = "support1@acme.local" }
-resource "pagerduty_user" "support_user_2" { name = "Support 2"; email = "support2@acme.local" }
-resource "pagerduty_user" "support_user_3" { name = "Support 3"; email = "support3@acme.local" }
+resource "pagerduty_user" "support_user_1" { 
+  name  = "Support 1"
+  email = "support1@live.cl" 
+}
+resource "pagerduty_user" "support_user_2" { 
+  name  = "Support 2"
+  email = "support2@live.cl" 
+}
+resource "pagerduty_user" "support_user_3" { 
+  name  = "Support 3"
+  email = "support3@live.cl" 
+}
 
 # Usuarios para DevOps Tier 2
-resource "pagerduty_user" "devops_user_1" { name = "DevOps 1"; email = "devops1@acme.local" }
-resource "pagerduty_user" "devops_user_2" { name = "DevOps 2"; email = "devops2@acme.local" }
-resource "pagerduty_user" "devops_user_3" { name = "DevOps 3"; email = "devops3@acme.local" }
+resource "pagerduty_user" "devops_user_1" { 
+  name  = "DevOps 1"
+  email = "devops1@live.cl" 
+}
+resource "pagerduty_user" "devops_user_2" { 
+  name  = "DevOps 2"
+  email = "devops2@live.cl" 
+}
+resource "pagerduty_user" "devops_user_3" { 
+  name  = "DevOps 3"
+  email = "devops3@live.cl" 
+}
 
 # Usuarios para Tech Ops Tier 2
-resource "pagerduty_user" "hotel_tech_user_1" { name = "Tech 1"; email = "tech1@acme.local" }
-resource "pagerduty_user" "hotel_tech_user_2" { name = "Tech 2"; email = "tech2@acme.local" }
+resource "pagerduty_user" "hotel_tech_user_1" { 
+  name  = "Tech 1"
+  email = "tech1@live.cl" 
+}
+resource "pagerduty_user" "hotel_tech_user_2" { 
+  name  = "Tech 2"
+  email = "tech2@live.cl" 
+}

@@ -4,7 +4,7 @@
 # en tu archivo teams_and_users.tf.
 
 # 1. Horario para el Centro de Soporte Corporativo (Tier 1)
-resource "pagerduty_schedulev2" "tier1_support" {
+resource "pagerduty_schedule" "tier1_support" {
   name      = "Tier 1 - Hotel Support Center 24x7"
   time_zone = "America/New_York" # Es vital definir la zona horaria base
 
@@ -23,7 +23,7 @@ resource "pagerduty_schedulev2" "tier1_support" {
 }
 
 # 2. Horario para DevOps y Operaciones Centrales (Tier 2)
-resource "pagerduty_schedulev2" "tier2_devops" {
+resource "pagerduty_schedule" "tier2_devops" {
   name      = "Tier 2 - Central Tech Eng & Ops 24x7"
   time_zone = "America/New_York"
 
@@ -42,7 +42,7 @@ resource "pagerduty_schedulev2" "tier2_devops" {
 }
 
 # 3. Horario para Operaciones Tecnológicas de Hoteles (Tier 2)
-resource "pagerduty_schedulev2" "tier2_hotel_tech" {
+resource "pagerduty_schedule" "tier2_hotel_tech" {
   name      = "Tier 2 - Hotel Tech Ops 24x7"
   time_zone = "America/New_York"
 
