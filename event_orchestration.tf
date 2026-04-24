@@ -1,6 +1,10 @@
 # event_orchestration.tf
 
 # 1. Obtenemos los IDs de las prioridades configuradas en la cuenta
+data "pagerduty_priority" "p0" {
+  name = "P0"
+}
+
 data "pagerduty_priority" "p1" {
   name = "P1"
 }
@@ -18,7 +22,20 @@ resource "pagerduty_event_orchestration_service" "aws_api_orchestration" {
   set {
     id = "start"
 
-    # Regla 1: Impacto Global (Todos los hoteles) -> Severidad Crítica y P1
+    # Regla 1: Impacto Global (Todos los huespedes) -> Severidad Crítica y P0
+    rule {
+      label = "Incidente Mayor - Todos los huespedes afectados"
+      condition {
+        # Evaluamos si el JSON que envía Datadog contiene esta palabra clave
+        expression = "event.custom_details.impact matches 'all_guests'"
+      }
+      actions {
+        severity = "critical"
+        priority = data.pagerduty_priority.p0.id
+        annotate = "INCIDENTE P0: Impacto total en la experiencia del huésped. Notificando a Stakeholders."
+      }
+    }
+    # Regla 2: Impacto Global (Todos los hoteles) -> Severidad Crítica y P1
     rule {
       label = "Incidente Mayor - Todos los hoteles afectados"
       condition {
@@ -32,7 +49,7 @@ resource "pagerduty_event_orchestration_service" "aws_api_orchestration" {
       }
     }
 
-    # Regla 2: Impacto Local (Un solo hotel) -> Severidad Alta y P2
+    # Regla 3: Impacto Local (Un solo hotel) -> Severidad Alta y P2
     rule {
       label = "Incidente Local - Aislamiento en un hotel"
       condition {

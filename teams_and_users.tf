@@ -79,3 +79,18 @@ resource "pagerduty_user" "hotel_tech_user_2" {
   name  = "Tech 2"
   email = "tech2@live.cl" 
 }
+
+resource "pagerduty_tag" "skill_aws" {
+  label = "Expertise: AWS"
+}
+
+resource "pagerduty_tag" "language_spanish" {
+  label = "Language: Spanish"
+}
+
+# Asignar etiquetas a un usuario (Ejemplo)
+resource "pagerduty_tag_assignment" "devops_aws_tag" {
+  tag_id      = pagerduty_tag.skill_aws.id
+  entity_type = "users"
+  entity_id   = pagerduty_user.devops_user_1.id
+}
