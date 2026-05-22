@@ -1,10 +1,10 @@
 resource "pagerduty_escalation_policy" "local_hotel_infrastructure" {
   name        = "Local Hotel Infrastructure Escalation"
-  description = "Escalamiento desde infraestructura local hacia soporte corporativo."
+  description = "Escalation from local infrastructure to corporate support."
   num_loops   = 2
-  teams = [pagerduty_team.corp_hotel_tech_ops.id]
+  teams       = [pagerduty_team.corp_hotel_tech_ops.id]
 
-  # Nivel 1: Apuntamos a un USUARIO específico del equipo técnico
+  # Level 1: Target a specific USER from the tech team
   rule {
     escalation_delay_in_minutes = 15
     target {
@@ -13,7 +13,7 @@ resource "pagerduty_escalation_policy" "local_hotel_infrastructure" {
     }
   }
 
-  # Nivel 2: Apuntamos a la ROTACIÓN 24x7 (Schedule) de Tier 1
+  # Level 2: Target the Tier 1 24x7 ROTATION (Schedule)
   rule {
     escalation_delay_in_minutes = 15
     target {
@@ -25,7 +25,7 @@ resource "pagerduty_escalation_policy" "local_hotel_infrastructure" {
 
 resource "pagerduty_escalation_policy" "cloud_apps_escalation" {
   name        = "Cloud Applications Escalation"
-  description = "Escalamiento para infraestructura Cloud. Va directo a DevOps."
+  description = "Escalation for Cloud infrastructure. Goes straight to DevOps."
   num_loops   = 2
 
   teams = [pagerduty_team.corp_hotel_tech_ops.id]
@@ -34,7 +34,7 @@ resource "pagerduty_escalation_policy" "cloud_apps_escalation" {
     escalation_delay_in_minutes = 10
     target {
       type = "schedule_reference"
-      id   = pagerduty_schedule.tier2_devops.id 
+      id   = pagerduty_schedule.tier2_devops.id
     }
   }
 }

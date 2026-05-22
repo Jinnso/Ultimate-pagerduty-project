@@ -4,7 +4,7 @@ output "datadog_integration_key" {
 }
 
 output "grafana_prometheus_integration_key" {
-  description = "Llave de integración para el servicio de Controladores de Llaves (Prometheus/Grafana)"
+  description = "Integration key for the IoT Key Controllers service (Prometheus/Grafana)"
   value       = pagerduty_service_integration.prometheus_key_controllers.integration_key
   sensitive   = true
 }

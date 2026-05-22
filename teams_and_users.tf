@@ -28,56 +28,56 @@ locals {
 resource "pagerduty_team" "local_hotel_teams" {
   for_each    = { for team in local.hotel_teams : team.team_name => team }
   name        = each.value.team_name
-  description = "Equipo de ${each.value.department} para el hotel en ${each.value.location}."
+  description = "Team for ${each.value.department} at the ${each.value.location} hotel."
 }
 
 # Equipos Corporativos
 resource "pagerduty_team" "corp_hotel_support_center" {
   name        = "Hotel Support Center (Tier 1)"
-  description = "Centro de soporte global 24x7."
+  description = "Global 24x7 support center."
 }
 
 resource "pagerduty_team" "corp_hotel_tech_ops" {
   name        = "Hotel Tech Operations (Tier 2)"
-  description = "Especialistas corporativos en WiFi y sistemas POS."
+  description = "Corporate specialists in WiFi and POS systems."
 }
 
 # Usuarios para Soporte Tier 1
-resource "pagerduty_user" "support_user_1" { 
+resource "pagerduty_user" "support_user_1" {
   name  = "Support 1"
-  email = "support1@live.cl" 
+  email = "support1@live.cl"
 }
-resource "pagerduty_user" "support_user_2" { 
+resource "pagerduty_user" "support_user_2" {
   name  = "Support 2"
-  email = "support2@live.cl" 
+  email = "support2@live.cl"
 }
-resource "pagerduty_user" "support_user_3" { 
+resource "pagerduty_user" "support_user_3" {
   name  = "Support 3"
-  email = "support3@live.cl" 
+  email = "support3@live.cl"
 }
 
 # Usuarios para DevOps Tier 2
-resource "pagerduty_user" "devops_user_1" { 
+resource "pagerduty_user" "devops_user_1" {
   name  = "DevOps 1"
-  email = "devops1@live.cl" 
+  email = "devops1@live.cl"
 }
-resource "pagerduty_user" "devops_user_2" { 
+resource "pagerduty_user" "devops_user_2" {
   name  = "DevOps 2"
-  email = "devops2@live.cl" 
+  email = "devops2@live.cl"
 }
-resource "pagerduty_user" "devops_user_3" { 
+resource "pagerduty_user" "devops_user_3" {
   name  = "DevOps 3"
-  email = "devops3@live.cl" 
+  email = "devops3@live.cl"
 }
 
 # Usuarios para Tech Ops Tier 2
-resource "pagerduty_user" "hotel_tech_user_1" { 
+resource "pagerduty_user" "hotel_tech_user_1" {
   name  = "Tech 1"
-  email = "tech1@live.cl" 
+  email = "tech1@live.cl"
 }
-resource "pagerduty_user" "hotel_tech_user_2" { 
+resource "pagerduty_user" "hotel_tech_user_2" {
   name  = "Tech 2"
-  email = "tech2@live.cl" 
+  email = "tech2@live.cl"
 }
 
 resource "pagerduty_tag" "skill_aws" {
@@ -95,7 +95,7 @@ resource "pagerduty_tag_assignment" "devops_aws_tag" {
   entity_id   = pagerduty_user.devops_user_1.id
 }
 
-# Vincular usuarios de DevOps al equipo de Central Tech
+# Bind DevOps users to the Central Tech team
 resource "pagerduty_team_membership" "devops_membership" {
   for_each = {
     user1 = pagerduty_user.devops_user_1.id
@@ -107,7 +107,7 @@ resource "pagerduty_team_membership" "devops_membership" {
   role    = "manager" # Puede ser manager, responder o observer
 }
 
-# Vincular usuarios de Soporte al Hotel Support Center
+# Bind Support users to the Hotel Support Center
 resource "pagerduty_team_membership" "support_membership" {
   for_each = {
     u1 = pagerduty_user.support_user_1.id

@@ -15,81 +15,80 @@ data "pagerduty_priority" "p2" {
 
 # 2. Orquestación para la API de Reservas en AWS
 resource "pagerduty_event_orchestration_service" "aws_api_orchestration" {
-  # Vinculamos esta orquestación al servicio técnico creado en services.tf
   service                                = pagerduty_service.cloud_reservation_api.id
   enable_event_orchestration_for_service = true
 
   set {
     id = "start"
 
-    # Regla 1: Impacto Global (Todos los huespedes) -> Severidad Crítica y P0
+    # Regla 1: Impacto Global (P0)
     rule {
-      label = "Incidente Mayor - Todos los huespedes afectados"
+      label = "Major Incident - All Guests Affected"
       condition {
-        # Evaluamos si el JSON que envía Datadog contiene esta palabra clave
-        expression = "event.custom_details.impact matches 'all_guests'"
+        # Usamos 'matches part' en todo el bloque de detalles para no fallar por formato
+        expression = "event.custom_details matches part 'all_guests'"
       }
       actions {
         severity = "critical"
         priority = data.pagerduty_priority.p0.id
-        annotate = "INCIDENTE P0: Impacto total en la experiencia del huésped. Notificando a Stakeholders."
+        annotate = "P0 INCIDENT: Full impact on guest experience. Notifying stakeholders."
       }
     }
-    # Regla 2: Impacto Global (Todos los hoteles) -> Severidad Crítica y P1
+
+    # Regla 2: Impacto Múltiples Hoteles (P1)
     rule {
-      label = "Incidente Mayor - Todos los hoteles afectados"
+      label = "Major Incident - All Hotels Affected"
       condition {
-        # Evaluamos si el JSON que envía Datadog contiene esta palabra clave
-        expression = "event.custom_details.impact matches 'all_hotels'"
+        expression = "event.custom_details matches part 'all_hotels'"
       }
       actions {
         severity = "critical"
         priority = data.pagerduty_priority.p1.id
-        annotate = "¡ATENCIÓN! Orquestación automatizada: Falla masiva en múltiples propiedades."
+        annotate = "ATTENTION! Automated orchestration: Massive failure across multiple properties."
       }
     }
 
-    # Regla 3: Impacto Local (Un solo hotel) -> Severidad Alta y P2
+    # Regla 3: Impacto Local (P2)
     rule {
-      label = "Incidente Local - Aislamiento en un hotel"
+      label = "Local Incident - Isolated to a single hotel"
       condition {
-        expression = "event.custom_details.impact matches 'single_hotel'"
+        expression = "event.custom_details matches part 'single_hotel'"
       }
       actions {
         severity = "error"
         priority = data.pagerduty_priority.p2.id
-        annotate = "Impacto aislado a nivel de sucursal local."
+        annotate = "Isolated impact at local branch level."
       }
     }
   }
 
-  # Comportamiento por defecto si la alerta no coincide con las reglas anteriores
   catch_all {
     actions {
-      severity = "info"
+      severity = "warning" # Cambiamos de info a warning para que al menos haga ruido si falla
     }
   }
 }
 
+# Orquestación para los controladores IoT (Grafana)
 resource "pagerduty_event_orchestration_service" "iot_orchestration" {
-  # Apuntamos esta orquestación al servicio que recibe las alertas de Grafana
-  service = pagerduty_service.local_key_controllers.id
+  service                                = pagerduty_service.local_key_controllers.id
   enable_event_orchestration_for_service = true
 
   set {
     id = "start"
 
-    # Regla: Si la alerta de Grafana dice "Critical", elevar a P1
+    # Regla: Atrapar la alerta de prueba de Grafana
     rule {
-      label = "Incidente Crítico de IoT (Elevación a P1)"
+      label = "Critical IoT Incident (Elevation to P1)"
       condition {
-        # Grafana suele incluir el estado en el summary o en los labels
-        expression = "event.summary matches part 'Critical' or event.custom_details.severity matches 'critical'"
+        # Ahora busca exactamente las palabras que envía tu Grafana
+        expression = "event.summary matches part 'FIRING' or event.summary matches part 'TestAlert'"
       }
       actions {
         severity = "critical"
+        # ¡Asignamos P1 para gatillar Slack y Jira!
         priority = data.pagerduty_priority.p1.id
-        annotate = "Orquestación: Alerta de Grafana evaluada y elevada a P1. Iniciando ChatOps y Jira."
+        annotate = "Orchestration: Grafana alert evaluated and elevated to P1. Starting ChatOps and Jira."
       }
     }
   }

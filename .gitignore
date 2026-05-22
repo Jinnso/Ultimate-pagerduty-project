@@ -1,20 +1,36 @@
-# Local .terraform directories
+# Terraform
 **/.terraform/*
-
-# .tfstate files
 *.tfstate
 *.tfstate.*
-
-# Crash log files
-crash.log
-crash.*.log
-
-# Archivo de variables con secretos (¡Muy importante!)
 terraform.tfvars
 *.auto.tfvars
-
-# Ignore override files as they are usually used to override resources locally and not shared
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# Secrets & environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+
+# macOS
+.DS_Store
+
+# Documentation & media
+*.pdf
+PagerDuty*.txt
+*.png
+*.jpg
+*.pptx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
